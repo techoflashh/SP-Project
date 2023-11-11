@@ -1,4 +1,4 @@
-function y=echo(x,fs,Delay,a)
+function y=echoCreation(x,fs,Delay,a)
     [samples,channel]=size(x);
     N=floor(Delay*fs);
     b=floor(N/samples);
