@@ -1,6 +1,6 @@
 function y=echo1channel(x,fs)
    N=floor(0.35*fs);
-   a=0.6;
+   a=0.75;
    y=zeros(1,length(x)+N);
    for k=1:length(y)
        if k<=N

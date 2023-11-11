@@ -1,7 +1,9 @@
 clear vars;
-[y,Fs] = audioread("m5.mp3");
+[y,Fs] = audioread("temp2.opus");
 y=transpose(y);
-yn=echo2channel(y,Fs);
+sound(y,Fs);
+pause(length(y)/Fs+1);
+yn=echo1channel(y,Fs);
 sound(yn,Fs);
 pause(length(yn)/Fs+1);
 % yn=transpose(yn);
