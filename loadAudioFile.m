@@ -1,3 +1,3 @@
-function [y,Fs] = loadAudioFile(FileName)
-    [y,Fs] = audioread(FileName);
+function [audio,fs] = loadAudioFile(FileName)
+    [audio,fs] = audioread(FileName);
 end
