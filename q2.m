@@ -1,22 +1,40 @@
 clearvars;
+mu = 0.01;
+filterLength = 64;
 
-[y,fs] = audioread("Audio/q2_not_so_easy.wav");
+[noisySignal,fs] = audioread("Audio/q2_easy.wav");
 
-y1 = y(1:88200);
-y2 = y(132401:220600);
-y3 = y(264601:352800);
-y4 = y(396901:485100);
+for k = 2:length(noisySignal)
+    if noisySignal(k) == 0
+        temp = k;
+        break;
+    end
+end
 
+originalSignal = [noisySignal(1:temp-1); zeros(length(noisySignal)-temp+1,1)];
 
+t = 0:1/fs:2;
 
-a = 0.6;
-ai = 1/a;
+originalSignal = originalSignal';
+noisySignal = noisySignal';
 
-y0 = [y1; zeros(44100,1); ai*y2; zeros(44100,1); ai*ai*y3; zeros(44100,1); ai*ai*ai*y4];
+w = zeros(1, filterLength);
 
-% % sound(y0,fs);
+for n = filterLength:length(noisySignal)
+    x = noisySignal(n:-1:n-filterLength+1);
+    xt = x';
+    y = w * xt;
+    e = originalSignal(n) - y;
+    % mu = 1/(x * xt);
+    w = w + 2 * mu * e * x;
+end
 
-audiowrite("Audio/q2_tempOriginalEasy.wav",y0,fs);
-audiowrite("Audio/q2_tempEchoedEasy.wav",y,fs);
+outputSignal = filter(w, 1, noisySignal);
+% outputSignal = outputSignal';
 
-plot(1:length(y),fft(y));
+audiowrite('Audio/q2_tempEchoFreeEasy.wav', outputSignal, fs);
+
+figure;
+subplot(3,1,1); plot(originalSignal); title('Original Signal');
+subplot(3,1,2); plot(noisySignal); title('Signal with Acoustic Echo');
+subplot(3,1,3); plot(outputSignal); title('Echo-Free Signal');
