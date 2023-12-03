@@ -10,9 +10,9 @@ function y=echoCreation(x,fs,Delay,a)
     [samples,channel]=size(x);
     N=floor(Delay*fs);
     if(N<=samples)
-        length=samples+4*N;
+        length=samples+N;
     else
-        length=4*N;
+        length=N;
     end
     y=zeros(length,channel);
     for k=1:channel
@@ -25,9 +25,9 @@ function y=echoCreation(x,fs,Delay,a)
                 end
             else
                 if(l<=samples)
-                    y(l,k)=x(l,k)+a*y(l-N,k);
+                    y(l,k)=x(l,k)+a*x(l-N,k);
                 else
-                    y(l,k)=a*y(l-N,k);
+                    y(l,k)=a*x(l-N,k);
                 end
             end
         end
