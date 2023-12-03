@@ -1,39 +1,111 @@
 clearvars;
-mu = 0.01;
+mu = 0.014;
+filterLength = 300;
 
-[noisySignal,fs] = audioread("Audio/q2_not_so_easy.wav");
+% Easy File
+[echoedSignal, fs] = audioread('Audio/q2_easy.wav');
 
-for k = 2:length(noisySignal)
-    if noisySignal(k) == 0
-        temp = k;
+flag = 0;
+for k = 2:length(echoedSignal)
+    if (echoedSignal(k) == 0 && flag == 0)
+        flag = k;
+    elseif (flag ~= 0 && echoedSignal(k) ~= 0)
+        temp1 = k;
         break;
     end
 end
 
-originalSignal = [noisySignal(1:temp-1); zeros(length(noisySignal)-temp+1,1)];
-filterLength = length(originalSignal);
-
-t = 0:1/fs:2;
+originalSignal = echoedSignal(1:flag-1);
+echoedSignal = echoedSignal(temp1:end);
+originalSignal = [originalSignal; zeros(length(echoedSignal) - length(originalSignal), 1)];
 
 originalSignal = originalSignal';
-noisySignal = noisySignal';
+echoedSignal = echoedSignal';
 
-w = zeros(1, filterLength);
-
-for n = 1:100
-    % x = noisySignal(n:-1:n-filterLength+1);
-    xt = originalSignal';
-    y = w * xt;
-    e = originalSignal(n) - y(n);
-    % mu = 1/(x * xt);
-    w = w + 2 * mu * e .* x;
+w = zeros(filterLength,1);
+tempx = zeros(filterLength,1);
+outputSignal = zeros(length(echoedSignal),1);
+for n = 1:length(originalSignal)
+    tempx = [echoedSignal(n); tempx(1:end-1)];
+    outputSignal(n) = w' * tempx;
+    e = originalSignal(n) - outputSignal(n);
+    w = w + 2 * mu * e * tempx;
 end
 
-outputSignal = filter(w, 1, noisySignal);
+audiowrite('Audio/q2_EchoFreeEasy.wav', outputSignal, fs);
 
-% audiowrite('Audio/q2_tempEchoFreeEasy.wav', outputSignal, fs);
+figure(1);
+subplot(3, 1, 1);
+plot(echoedSignal);
+xlabel('n');
+ylabel('x_{echoed}[n]');
+title('Input Signal with Echo');
+grid on;
 
-figure;
-subplot(3,1,1); plot(originalSignal); title('Original Signal');
-subplot(3,1,2); plot(noisySignal); title('Signal with Acoustic Echo');
-subplot(3,1,3); plot(outputSignal); title('Echo-Free Signal');
+subplot(3, 1, 2);
+plot(originalSignal);
+xlabel('n');
+ylabel('x_{Desired}[n]');
+title('Desired Signal (Without Echo');
+grid on;
+
+subplot(3, 1, 3);
+plot(outputSignal);
+xlabel('n');
+ylabel('y[n]');
+title('Output Signal (After Adaptive Filtering)');
+grid on;
+
+% Not So Easy File
+[echoedSignal, fs] = audioread('Audio/q2_not_so_easy.wav');
+
+flag = 0;
+for k = 2:length(echoedSignal)
+    if (echoedSignal(k) == 0 && flag == 0)
+        flag = k;
+    elseif (flag ~= 0 && echoedSignal(k) ~= 0)
+        temp1 = k;
+        break;
+    end
+end
+
+originalSignal = echoedSignal(1:flag-1);
+echoedSignal = echoedSignal(temp1:end);
+originalSignal = [originalSignal; zeros(length(echoedSignal) - length(originalSignal), 1)];
+
+originalSignal = originalSignal';
+echoedSignal = echoedSignal';
+
+w = zeros(filterLength,1);
+tempx = zeros(filterLength,1);
+outputSignal = zeros(length(echoedSignal),1);
+for n = 1:length(originalSignal)
+    tempx = [echoedSignal(n); tempx(1:end-1)];
+    outputSignal(n) = w' * tempx;
+    e = originalSignal(n) - outputSignal(n);
+    w = w + 2 * mu * e * tempx;
+end
+
+audiowrite('Audio/q2_EchoFreeNotSoEasy.wav', outputSignal, fs);
+
+figure(2);
+subplot(3, 1, 1);
+plot(echoedSignal);
+xlabel('n');
+ylabel('x_{echoed}[n]');
+title('Input Signal with Echo');
+grid on;
+
+subplot(3, 1, 2);
+plot(originalSignal);
+xlabel('n');
+ylabel('x_{Desired}[n]');
+title('Desired Signal (Without Echo');
+grid on;
+
+subplot(3, 1, 3);
+plot(outputSignal);
+xlabel('n');
+ylabel('y[n]');
+title('Output Signal (After Adaptive Filtering)');
+grid on;
