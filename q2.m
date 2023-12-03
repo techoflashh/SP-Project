@@ -8,7 +8,13 @@ filterLength = 300;
 flag = 0;
 for k = 2:length(echoedSignal)
     if (echoedSignal(k) == 0 && flag == 0)
-        flag = k;
+        for k1 = 1:1000
+            if (echoedSignal(k+k1)~=0)
+                break;
+            elseif (k1 == 1000)
+                flag = k;
+            end
+        end
     elseif (flag ~= 0 && echoedSignal(k) ~= 0)
         temp1 = k;
         break;
@@ -46,7 +52,7 @@ subplot(3, 1, 2);
 plot(originalSignal);
 xlabel('n');
 ylabel('x_{Desired}[n]');
-title('Desired Signal (Without Echo');
+title('Desired Signal Without Echo');
 grid on;
 
 subplot(3, 1, 3);
@@ -62,7 +68,13 @@ grid on;
 flag = 0;
 for k = 2:length(echoedSignal)
     if (echoedSignal(k) == 0 && flag == 0)
-        flag = k;
+        for k1 = 1:1000
+            if (echoedSignal(k+k1)~=0)
+                break;
+            elseif (k1 == 1000)
+                flag = k;
+            end
+        end
     elseif (flag ~= 0 && echoedSignal(k) ~= 0)
         temp1 = k;
         break;
@@ -100,7 +112,7 @@ subplot(3, 1, 2);
 plot(originalSignal);
 xlabel('n');
 ylabel('x_{Desired}[n]');
-title('Desired Signal (Without Echo');
+title('Desired Signal Without Echo');
 grid on;
 
 subplot(3, 1, 3);

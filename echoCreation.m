@@ -1,7 +1,14 @@
 function y=echoCreation(x,fs,Delay,a)
+    % [l,ch] = size(x);
+    % x = [x;zeros(Delay*fs,ch)];
+    % b=zeros(1,floor(Delay*fs));
+    % b(1)=1;
+    % b(floor(Delay*fs))=a;
+    % c=1;
+    % y=filter(b,c,x);
+
     [samples,channel]=size(x);
     N=floor(Delay*fs);
-    b=floor(N/samples);
     if(N<=samples)
         length=samples+4*N;
     else
@@ -25,5 +32,4 @@ function y=echoCreation(x,fs,Delay,a)
             end
         end
     end
-   
 end
