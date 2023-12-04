@@ -2,17 +2,17 @@ clearvars;
 
 % parameters
 Delay = 0.35;
-a = 0.5;
+a = 0.4;
 
-fs = 80000;
-x = [ones(400000,1);zeros(floor(Delay*fs),1)];
+fs = 800;
+x = [ones(40000,1);zeros(floor(Delay*fs),1)];
 
-b=zeros(1,floor(Delay*fs));
-b(1)=1;
-b(floor(Delay*fs))=a;
-c=1;
+b=1;
+c=zeros(1,floor(Delay*fs));
+c(1) = 1;
+c(floor(Delay*fs))=-a;
 
-yn = filter(b,c,x);
+yn = echoCreation(x,fs,Delay,a);
 
 figure(1);
 sgtitle("Echo Creation using Filter")
