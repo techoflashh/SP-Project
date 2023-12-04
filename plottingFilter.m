@@ -7,11 +7,6 @@ a = 0.4;
 fs = 800;
 x = [ones(40000,1);zeros(floor(Delay*fs),1)];
 
-b=1;
-c=zeros(1,floor(Delay*fs));
-c(1) = 1;
-c(floor(Delay*fs))=-a;
-
 yn = echoCreation(x,fs,Delay,a);
 
 figure(1);
