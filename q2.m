@@ -1,34 +1,10 @@
 clearvars;
 mu = 0.014;
 filterLength = 300;
-
-FileName = 'Audio/q2_not_so_easy.wav';
-[echoedSignal, fs] = loadAudioFile(FileName);
-
-flag = 0;
-for k = 2:length(echoedSignal)
-    if (echoedSignal(k) == 0 && flag == 0)
-        for k1 = 1:1000
-            if (echoedSignal(k+k1)~=0)
-                break;
-            elseif (k1 == 1000)
-                flag = k;
-            end
-        end
-    elseif (flag ~= 0 && echoedSignal(k) ~= 0)
-        temp1 = k;
-        break;
-    end
-end
-
-originalSignal = echoedSignal(1:flag-1);
-echoedSignal = echoedSignal(temp1:end);
-originalSignal = [originalSignal; zeros(length(echoedSignal) - length(originalSignal), 1)];
-
-% FileNameEchoed = 'Audio/q2_echoed.wav';
-% FileNameOriginal = 'Audio/q2_original.wav';
-% [echoedSignal, fs] = loadAudioFile(FileNameEchoed);
-% [originalSignal, fs] = loadAudioFile(FileNameOriginal);
+FileNameEchoed = './Input/q2_echohard.wav';%Give filename with ehoed signal
+FileNameOriginal = './Input/q2_desired.wav';%Give filename with desired signal
+[echoedSignal, fs] = loadAudioFile(FileNameEchoed);
+[originalSignal, fs] = loadAudioFile(FileNameOriginal);
 
 originalSignal = originalSignal';
 echoedSignal = echoedSignal';
@@ -43,8 +19,9 @@ for n = 1:length(originalSignal)
     w = w + 2 * mu * e * tempx;
 end
 
-audiowrite('Audio/q2_EchoFree.wav', outputSignal, fs);
-
+audiowrite('Output/q2_echohard.wav', outputSignal, fs);
+sound(outputSignal,fs);
+pause(length(outputSignal)/fs+1);
 figure(1);
 subplot(3, 1, 1);
 plot(echoedSignal);
